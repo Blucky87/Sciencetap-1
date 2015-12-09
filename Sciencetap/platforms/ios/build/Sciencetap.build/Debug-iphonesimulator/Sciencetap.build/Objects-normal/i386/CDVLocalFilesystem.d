@@ -1,0 +1,25 @@
+dependencies: \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/Sciencetap/Plugins/cordova-plugin-file/CDVLocalFilesystem.m \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/Sciencetap/Plugins/cordova-plugin-file/CDVFile.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVPlugin.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVPluginResult.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVAvailability.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVAvailabilityDeprecated.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/NSMutableArray+QueueAdditions.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVCommandDelegate.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVInvokedUrlCommand.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/Sciencetap/Plugins/cordova-plugin-file/CDVLocalFilesystem.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDV.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVViewController.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVCommandQueue.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVWhitelist.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVScreenOrientationDelegate.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVURLProtocol.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVDebug.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVLocalStorage.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVTimer.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/NSArray+Comparisons.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/NSData+Base64.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/NSDictionary+Extensions.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/UIDevice+Extensions.h \
+  /Users/mark/Documents/src/Sciencetap/Sciencetap/platforms/ios/build/emulator/include/Cordova/CDVJSON.h
