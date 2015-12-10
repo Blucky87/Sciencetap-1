@@ -1362,12 +1362,15 @@ app.factory('GoogleMaps', function($cordovaGeolocation, $ionicPopup, $ionicLoadi
 	};
 
 	function loadGoogleMaps(){
-		$ionicLoading.show({
-			template: 'Loading Map'
-		});
+		//$ionicLoading.show({ template: 'Loading Map' });
 
 		//function called once SDK loaded
 		window.mapInit = function(){
+			var geoScript = document.createElement("script");
+			geoScript.type = "text/javascript";
+			geoScript.id = "geolocationMarker";
+			geoScript.src = "js/geolocation-marker.js";
+			document.body.appendChild(geoScript);
 			initMap();
 		};
 
@@ -1382,14 +1385,6 @@ app.factory('GoogleMaps', function($cordovaGeolocation, $ionicPopup, $ionicLoadi
 				script.src = 'http://maps.google.com/maps/api/js?sensor=true&callback=mapInit';
 			}
 			document.body.appendChild(script);
-			
-			setTimeout(function(){
-				var geoScript = document.createElement("script");
-				geoScript.type = "text/javascript";
-				geoScript.id = "geolocationMarker";
-				geoScript.src = "js/geolocation-marker.js";
-				document.body.appendChild(geoScript);
-			},1000);
 		}
 	}
 
@@ -1460,7 +1455,6 @@ app.factory('GoogleMaps', function($cordovaGeolocation, $ionicPopup, $ionicLoadi
 				console.warn("Google Maps SDK needs to be loaded");
 				var networkState = navigator.connection.type;
 				console.log(networkState);
-				//disableMap();
 				if(ConnectivityMonitor.isOnline()){
 					loadGoogleMaps();
 				}

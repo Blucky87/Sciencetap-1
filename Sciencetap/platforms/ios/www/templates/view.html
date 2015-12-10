@@ -1,17 +1,21 @@
 <ion-view view-title="View" name="view">
-	<ion-header-bar class="bar-positive">
-		<div class="buttons">
-		<a nav-transition="ios" href="#/settings" class="button">
-		<i class="icon ion-gear-b"></i>
+	<div class="bar bar-header bar-positive">
+		<a nav-transition="ios" href="#/home" class="button button-positive">
+			<i class="icon ion-home"></i>
 		</a>
-		</div>
 		<div class="title">View</div>
-	</ion-header-bar>
-	<div class="bar bar-subheader">
-		<h2 class="title" ng-click="openViewFilterModal()"> Filter By: <span class="item-note">My Uploads</span></h2>
 	</div>
 	<ion-view class="bg">
-		<ion-content class="padding has-subheader has-footer">
+		<ion-content class="padding has-header has-tabs">
+		<div class="list">
+			<div class="item item-divider">
+				Select Observations	
+			</div>
+			<ion-item ng-click="getObservationsByMe()"> Uploaded By Me 
+			<span class="item-note"><i ng-show="!projectSelected" class="icon ion-checkmark"></i></span>
+			</ion-item>
+			<ion-item ng-click="openViewProjectsModal()"> By Project <span class="item-note">{{selectedProject.name}}</ion-item>
+		</div>
 		<div class="list card">
 			<a ng-repeat="observationObject in observationObjects" class="item" href="#" ng-click="setObservationObject(observationObject);openObservationModal()">
 	<p>Project: {{observationObject.projectName}}</p>
@@ -21,6 +25,8 @@
 	<p>Time Created : {{observationObject.time}}</p>
 	</a>
 		</div>
+		<br>
+		<br>
 		</ion-content>
 	</ion-view>
 	<div class="tabs tabs-positive tabs-icon-bottom">
