@@ -1,12 +1,12 @@
-<ion-view view-title="Settings" name="settings-view">
-	<ion-header-bar class="bar-positive">
-		<div class="title">Settings</div>
-	</ion-header-bar>
+<ion-view view-title="home" name="home">
+	<div class="bar bar-header bar-positive">
+		<h1 class="title">Home</h1>
+	</div>
 	<div class="bar bar-stable bar-subheader">
 		<h2 class="title">Welcome {{user.firstName}} </h2>
 	</div>
 <ion-view class="bg">
-	<ion-content class="padding has-subheader has-footer">
+	<ion-content class="padding has-subheader has-tabs">
 		<div class="list">
 			<div class="item item-divider">
 			My Account 
@@ -23,11 +23,16 @@
 			<ion-item>
 			Phone: <span class="item-note">{{user.phone}}</span>
 			</ion-item>
+			<div class="item item-divider">
+			My Projects 
+			</div>
+			<ion-item ng-repeat="project in projects">{{project.name}}</ion-item>
 		</div>
-		<h4>{{message}}</h4>
 		<button class="button button-royal button-block" ng-click="logout()">
 		Sign Out
 		</button>
+		<br>
+		<br>
 	</ion-content>
 </ion-view>
 	<div class="tabs tabs-positive tabs-icon-bottom">
