@@ -41,15 +41,36 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 			controller: 'LoginCtrl'
 		})
 	$urlRouterProvider.otherwise('/login')
-})
-
-app.run(function($ionicPlatform, $state) {
 	
-	if(ionic.Platform.isWebView()){
+	window.localStorage.setItem("admin", "false");
+	console.log("Platform");
+	console.log(ionic.Platform.platform());
+	console.log("Device");
+	console.log(ionic.Platform.device());
+	console.log("IPad");
+	console.log(ionic.Platform.isIPad());
+	console.log("IOS");
+	console.log(ionic.Platform.isIOS());
+	console.log("android");
+	console.log(ionic.Platform.isAndroid());
+	console.log("windows");
+	console.log(ionic.Platform.isWindowsPhone());
+	
+	if(ionic.Platform.isWindowsPhone() || ionic.Platform.isAndroid() || ionic.Platform.isIOS()){
 		setTimeout(function(){
 			navigator.splashscreen.hide();
 		}, 1000);
+		console.log("Is cordova, admin false");
+		console.log(window.localStorage.getItem("admin"));
+	}else{
+		console.log("Is browser, admin true");
+		window.localStorage.setItem("admin", "true");
+		console.log(window.localStorage.getItem("admin"));
 	}
+	
+})
+
+app.run(function($ionicPlatform, $state) {
 
 	$ionicPlatform.ready(function() {
 		if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -271,6 +292,9 @@ app.controller('CollectCtrl', function($scope, $ionicPopup, $state, $cordovaGeol
 	var noSite = { site_name: 'Select a Site', site_id: 0 };
 	var noForm = { name:  'Select a Form (Optional)', id: '0', fields: [] };
 	var noDropdown = { dropdown_value: 'none', form_input_id: '0' }
+	$scope.isAdmin = window.localStorage.getItem("admin");
+	console.log("isAdmin");
+	console.log($scope.isAdmin);
 
         $scope.selectedProject = noProject; 
         $scope.selectedSite = noSite; 
@@ -711,6 +735,8 @@ app.controller('ViewCtrl', function($scope, $ionicPopup, $state, $cordovaGeoloca
 	$scope.customFilters = [
 		{"name" : "My Uploads", "id" : "1"}, {"name" : "My Projects", "id" : "2"}
 	];
+	$scope.isAdmin = window.localStorage.getItem("admin");
+	
 	$scope.showSpinner = function(){
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral"></ion-spinner>'
@@ -1184,6 +1210,7 @@ app.controller('HomeCtrl', function($scope, $ionicPopup, $state, $cordovaGeoloca
 	$scope.user.id = window.localStorage.getItem("userId");
 	$scope.user.lastName = window.localStorage.getItem("lastName");
 	$scope.projects = [];
+	$scope.isAdmin = window.localStorage.getItem("admin");
 
 	$scope.logout = function(){
 		window.localStorage.removeItem('loggedInUser');

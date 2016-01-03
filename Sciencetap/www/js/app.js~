@@ -44,11 +44,18 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 })
 
 app.run(function($ionicPlatform, $state) {
+	window.localStorage.setItem("admin", false);
 	
 	if(ionic.Platform.isWebView()){
 		setTimeout(function(){
 			navigator.splashscreen.hide();
 		}, 1000);
+		console.log("Is cordova");
+		window.localStorage.setItem("admin", true);
+		console.log(window.localStorage.getItem("admin");
+	}else{
+		console.log("is browser");
+		console.log(window.localStorage.getItem("admin");
 	}
 
 	$ionicPlatform.ready(function() {
