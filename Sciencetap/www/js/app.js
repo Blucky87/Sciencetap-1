@@ -40,6 +40,21 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 			templateUrl: 'templates/reset_password.html',
 			controller: 'LoginCtrl'
 		})
+		.state('admin',{
+			url: '/admin',
+			templateUrl: 'templates/admin.html',
+			controller: 'AdminCtrl'
+		})
+		.state('create_project',{
+			url: '/create_project',
+			templateUrl: 'templates/create_project.html',
+			controller: 'AdminCtrl'
+		})
+		.state('assign_to_project',{
+			url: '/assign_to_project',
+			templateUrl: 'templates/assign_to_project.html',
+			controller: 'AdminCtrl'
+		})
 	$urlRouterProvider.otherwise('/login')
 	
 	window.localStorage.setItem("admin", "false");
@@ -85,6 +100,44 @@ app.run(function($ionicPlatform, $state) {
 		}
 	});
 })
+
+app.controller('AdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate){
+	
+	console.log("In AdminCtrl");
+	$scope.create_project = {};
+	$scope.create_project.name = '';
+	$scope.create_project.descr = '';
+	$scope.user = {};
+	$scope.user.id = window.localStorage.getItem("userId");
+	$scope.new_project_id = '';
+	
+	$scope.createProject = function(){
+		console.log("New Project's Name");
+		console.log($scope.create_project.name);
+		console.log("New Project's Description");
+		console.log($scope.create_project.descr);
+		var uploadData = {
+		project_name: $scope.create_project.name,
+		project_descr: $scope.create_project.descr,
+		user_id: $scope.user.id
+		};
+		var request = $http({
+			method: "post",
+			url: 'http://sciencetap.us/ionic/createProject.php',
+			data:{ uploadData: uploadData }
+		});
+		request.success(function(data){
+			$scope.new_project_id = data.slice(1, -1);	//remove quotes
+			console.log("New Project's ID");
+			console.log($scope.new_project_id);
+			$state.go('assign_to_project');
+		});
+		request.error(function(data){
+			console.log("Error creating project");
+			console.log(data);
+		});
+	};
+});
 
 app.controller('LoginCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, LoginService, $ionicScrollDelegate){
 	$scope.data = {};
@@ -267,7 +320,6 @@ app.controller('LoginCtrl', function($scope, $ionicPopup, $state, $ionicLoading,
 
 app.controller('MapCtrl', function($scope, $state, $cordovaGeolocation, GoogleMaps){
 	GoogleMaps.init('AIzaSyAWStknXNZGYHFiPNEHPEETgBkAnuN7_kc');
-
 });	
 
 app.controller('CollectCtrl', function($scope, $ionicPopup, $state, $cordovaGeolocation, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicSlideBoxDelegate, Camera, $ionicLoading, $ionicScrollDelegate){

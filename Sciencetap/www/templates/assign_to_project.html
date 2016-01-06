@@ -1,0 +1,81 @@
+<ion-view view-title="assign_to_project" name="assign_to_project">
+	<div class="bar bar-header bar-positive">
+		<h1 class="title">Assign Sites To Project</h1>
+	</div>
+	<ion-view class="bg">
+	<ion-content class="padding has-subheader has-tabs">
+		<div class="list card">
+			<div class="item item-divider">Sites</div>
+			<a class="item item-button-right" href="#">
+					<strong>Site 1</strong>
+					<button class="button">Unassign</button>
+			</a>
+			<a class="item item-button-right" href="#">
+					<strong>Site 2</strong>
+					<button class="button button-positive">Assign</button>
+			</a>
+			<a class="item item-button-right" href="#">
+					<strong>Site 3</strong>
+					<button class="button button-positive">Assign</button>
+			</a>
+		</div>
+		<div class="list card">
+			<div class="item item-divider">Users</div>
+			<a class="item" href="#">
+					<strong>User 1</strong> <div class="btnFltRt">
+					<button class="button button-small button-positive">Project Admin</button>
+					<button class="button button-small">Normal User</button>
+					<button class="button button-small">Unassign</button>
+					</div></a>
+			<a class="item" href="#">
+					<strong>User 2</strong> <div class="btnFltRt">
+					<button class="button button-small">Project Admin</button>
+					<button class="button button-small button-positive">Normal User</button>
+					<button class="button button-small">Unassign</button>
+					</div></a>
+			<a class="item" href="#">
+					<strong>User 3</strong> <div class="btnFltRt">
+					<button class="button button-small">Project Admin</button>
+					<button class="button button-small">Normal User</button>
+					<button class="button button-small button-positive">Not Assigned</button>
+					</div></a>
+		</div>
+		<div class="list card">
+			<div class="item item-divider">Forms</div>
+			<a class="item item-button-right" href="#">
+					<strong>Form 1</strong>
+					<button class="button button-positive">Assign</button>
+			</a>
+			<a class="item item-button-right" href="#">
+					<strong>Form 2</strong>
+					<button class="button">Unassign</button>
+			</a>
+			<a class="item item-button-right" href="#">
+					<strong>Form 3</strong>
+					<button class="button button-positive">Assign</button>
+			</a>
+		</div>
+		<a nav-transition="ios" href="#/admin" class="button button-royal button-block">
+Done	
+		</a>
+	</ion-content>
+	</ion-view>
+	<div class="tabs tabs-positive tabs-icon-bottom">
+		<a nav-transition="ios" href="#/map" class="tab-item">
+		<i class="icon ion-map"></i>
+		Map
+		</a>
+		<a nav-transition="ios" href="#/collect" class="tab-item">
+		<i class="icon ion-clipboard"></i>
+		Collect
+		</a>
+		<a nav-transition="ios" href="#/view" class="tab-item">
+		<i class="icon ion-eye"></i>
+		View
+		</a>
+		<a nav-transition="ios" href="#/admin" class="tab-item active">
+		<i class="icon ion-settings"></i>
+		Admin	
+		</a>
+	</div>
+</ion-view>

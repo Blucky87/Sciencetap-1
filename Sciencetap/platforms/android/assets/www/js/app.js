@@ -40,6 +40,11 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 			templateUrl: 'templates/reset_password.html',
 			controller: 'LoginCtrl'
 		})
+		.state('admin',{
+			url: '/admin',
+			templateUrl: 'templates/admin.html',
+			controller: 'AdminCtrl'
+		})
 	$urlRouterProvider.otherwise('/login')
 	
 	window.localStorage.setItem("admin", "false");
@@ -85,6 +90,10 @@ app.run(function($ionicPlatform, $state) {
 		}
 	});
 })
+
+app.controller('AdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate){
+	console.log("In AdminCtrl");
+});
 
 app.controller('LoginCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, LoginService, $ionicScrollDelegate){
 	$scope.data = {};
