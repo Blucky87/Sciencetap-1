@@ -48,12 +48,12 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 		.state('create_project',{
 			url: '/create_project',
 			templateUrl: 'templates/create_project.html',
-			controller: 'AdminCtrl'
+			controller: 'CreateProjectCtrl'
 		})
 		.state('assign_to_project',{
 			url: '/assign_to_project',
 			templateUrl: 'templates/assign_to_project.html',
-			controller: 'AdminCtrl'
+			controller: 'AssignToProjectCtrl'
 		})
 	$urlRouterProvider.otherwise('/login')
 	
@@ -70,6 +70,8 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 	console.log(ionic.Platform.isAndroid());
 	console.log("windows");
 	console.log(ionic.Platform.isWindowsPhone());
+	console.log("isWebView");
+	console.log(ionic.Platform.isWebView());
 	
 	if(ionic.Platform.isWindowsPhone() || ionic.Platform.isAndroid() || ionic.Platform.isIOS()){
 		setTimeout(function(){
@@ -101,25 +103,36 @@ app.run(function($ionicPlatform, $state) {
 	});
 })
 
-app.controller('AdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate){
-	
-	console.log("In AdminCtrl");
+app.controller('CreateProjectCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createProjectService){
+
+	console.log("In CreateProjectCtrl");
 	$scope.create_project = {};
-	$scope.create_project.name = '';
-	$scope.create_project.descr = '';
 	$scope.user = {};
 	$scope.user.id = window.localStorage.getItem("userId");
-	$scope.new_project_id = '';
 	
+	$scope.showSpinner = function(){
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral"></ion-spinner>'
+		});
+	};
+
+	$scope.hideSpinner = function(){ $ionicLoading.hide(); };
+
 	$scope.createProject = function(){
+		
+		$scope.showSpinner();
 		console.log("New Project's Name");
 		console.log($scope.create_project.name);
+		createProjectService.addProjectName($scope.create_project.name);
+		
 		console.log("New Project's Description");
 		console.log($scope.create_project.descr);
+		createProjectService.addProjectDescr($scope.create_project.descr);
+		
 		var uploadData = {
-		project_name: $scope.create_project.name,
-		project_descr: $scope.create_project.descr,
-		user_id: $scope.user.id
+			project_name: $scope.create_project.name,
+			project_descr: $scope.create_project.descr,
+			user_id: $scope.user.id
 		};
 		var request = $http({
 			method: "post",
@@ -127,16 +140,59 @@ app.controller('AdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading,
 			data:{ uploadData: uploadData }
 		});
 		request.success(function(data){
-			$scope.new_project_id = data.slice(1, -1);	//remove quotes
-			console.log("New Project's ID");
-			console.log($scope.new_project_id);
+			console.log("All Data");
+			console.log(data);
+
+			console.log("Project Name");
+			console.log($scope.create_project.name );
+			
+			console.log("Project ID");
+			createProjectService.addProjectId(data.project_id);
+			console.log(data.project_id);
+			
+			console.log("Sites");
+			console.log(data.unassigned_sites);
+			createProjectService.addProjectSites(data.unassigned_sites);
+			
+			console.log("Forms");
+			console.log(data.forms);
+			createProjectService.addProjectForms(data.forms);
+			
+			console.log("Users");
+			console.log(data.users);
+			createProjectService.addProjectUsers(data.users);
+
+			$scope.hideSpinner();
 			$state.go('assign_to_project');
 		});
 		request.error(function(data){
+			$scope.hideSpinner();
 			console.log("Error creating project");
 			console.log(data);
 		});
 	};
+});
+
+app.controller('AssignToProjectCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createProjectService){
+	
+	console.log("In AssignToProjectCtrl");
+	
+	$scope.create_project = createProjectService.getProjectData();
+	console.log("create_project");
+	console.log($scope.create_project);
+	
+	$scope.assignUser = function(user){ user.assigned = true; }
+	$scope.assignProjectAdmin = function(user){ user.project_admin = true;}
+	$scope.unassignUser = function(user){ user.assigned = false; user.project_admin = false;}
+	$scope.unassignProjectAdmin = function(user){user.project_admin = false;}
+	
+});
+
+
+app.controller('AdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createProjectService){
+	
+	console.log("In AdminCtrl");
+
 });
 
 app.controller('LoginCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, LoginService, $ionicScrollDelegate){
@@ -1571,4 +1627,28 @@ app.factory('ConnectivityMonitor', function($rootScope, $cordovaNetwork){
 			}
 		}
 	}
-})
+});
+
+app.service('createProjectService', function(){
+	var newProjectData = {};
+	
+	var addProjectName = function(name){ newProjectData.name = name; }
+	var addProjectDescr = function(descr){ newProjectData.descr = descr; }
+	var addProjectId = function(id){ newProjectData.id = id; }
+	var addProjectUsers = function(users){ newProjectData.users = users; }
+	var addProjectSites = function(sites){ newProjectData.sites = sites; }
+	var addProjectForms = function(forms){ newProjectData.forms = forms; }
+	var getProjectData = function(){ return newProjectData; }
+	
+	return{
+		addProjectName: addProjectName,
+		addProjectDescr: addProjectDescr,
+		addProjectId: addProjectId,
+		addProjectUsers: addProjectUsers,
+		addProjectSites: addProjectSites,
+		addProjectForms: addProjectForms,
+		getProjectData: getProjectData
+	}
+	
+});
+
