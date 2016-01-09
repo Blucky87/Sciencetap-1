@@ -14,8 +14,8 @@
 			<div class="item item-divider">Sites</div>
 			<a ng-repeat="site in create_project.sites" class="item item-button-right" href="#">
 					<strong>{{site.site_name}}</strong>
-					<button ng-if="site.assigned">Unassign</button>
-					<button ng-show="site.site_id != 0" ng-if="!site.assigned">Assign</button>
+					<button ng-if="site.assigned" class="button button-small button-positive" ng-click="unassignSite(site)">Assigned</button>
+					<button ng-show="site.site_id != 0" ng-if="!site.assigned" class="button button-small" ng-click="assignSite(site)">Assign</button>
 			</a>
 		</div>
 		
@@ -33,9 +33,9 @@
 					<div class="btnFltRt">
 					<button ng-if="user.project_admin == true" class="button button-small button-positive" ng-click="unassignProjectAdmin(user)">Project Admin</button>
 					<button ng-if="user.project_admin == false" class="button button-small" ng-click="assignProjectAdmin(user)">Project Admin</button>
-					<button ng-if="user.assigned == true" class="button button-small button-postive"ng-click="unassignUser(user)">Normal User</button>
+					<button ng-if="user.assigned == true" class="button button-small button-positive"ng-click="unassignUser(user)">Normal User</button>
 					<button ng-if="user.assigned == false" class="button button-small" ng-click="assignUser(user)">Normal User</button>
-					<button ng-if="user.assigned == true" class="button button-small button-danger" ng-click="unassignUser(user)">Unassign</button>
+					<button ng-if="user.assigned == true" class="button button-small button-assertive" ng-click="unassignUser(user)">Unassign</button>
 					</div>
 			</a>
 		</div>
@@ -49,8 +49,8 @@
 			<div class="item item-divider">Forms</div>
 			<a ng-repeat="form in create_project.forms" class="item item-button-right" href="#">
 					<strong>{{form.form_name}}</strong>
-					<button ng-if="form.assigned" class="button button-small">Unassign</button>
-					<button ng-if="!form.assigned" class="button button-small button-postive">Unassign</button>
+					<button ng-if="form.assigned" class="button button-small button-positive" ng-click="unassignForm(form)">Assigned</button>
+					<button ng-if="!form.assigned" class="button button-small" ng-click="assignForm(form)">Assign</button>
 			</a>
 		</div>
 		

@@ -181,11 +181,16 @@ app.controller('AssignToProjectCtrl', function($scope, $ionicPopup, $state, $ion
 	console.log("create_project");
 	console.log($scope.create_project);
 	
-	$scope.assignUser = function(user){ user.assigned = true; }
-	$scope.assignProjectAdmin = function(user){ user.project_admin = true;}
-	$scope.unassignUser = function(user){ user.assigned = false; user.project_admin = false;}
-	$scope.unassignProjectAdmin = function(user){user.project_admin = false;}
+	$scope.unassignSite = function(site){ site.assigned = false; console.log("unassignSite");console.log(site);}
+	$scope.assignSite = function(site){ site.assigned = true; console.log("assignSite");console.log(site);}
 	
+	$scope.assignUser = function(user){ user.assigned = true; console.log("assignUser");console.log(user);}
+	$scope.assignProjectAdmin = function(user){ user.project_admin = true; user.assigned = true; console.log("assignProjectAdmin");console.log(user);}
+	$scope.unassignUser = function(user){ user.assigned = false; user.project_admin = false; console.log("unassignUser");console.log(user);}
+	$scope.unassignProjectAdmin = function(user){user.project_admin = false; console.log("unassignProjectAdmin");console.log(user);}
+	
+	$scope.unassignForm = function(form){ form.assigned = false; console.log("unassignForm");console.log(form);}
+	$scope.assignForm = function(form){ form.assigned = true; console.log("assignForm");console.log(form);}
 });
 
 
