@@ -55,6 +55,16 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 			templateUrl: 'templates/assign_to_project.html',
 			controller: 'AssignToProjectCtrl'
 		})
+		.state('create_site',{
+			url: '/create_site',
+			templateUrl: 'templates/create_site.html',
+			controller: 'CreateSiteCtrl'
+		})
+		.state('assign_to_site',{
+			url: '/assign_to_site',
+			templateUrl: 'templates/assign_to_site.html',
+			controller: 'AssignToSiteCtrl'
+		})
 	$urlRouterProvider.otherwise('/login')
 	
 	window.localStorage.setItem("admin", "false");
@@ -115,6 +125,7 @@ app.controller('CreateProjectCtrl', function($scope, $ionicPopup, $state, $ionic
 			template: '<ion-spinner icon="spiral"></ion-spinner>'
 		});
 	};
+	$scope.goBack = function(){ $state.go('admin'); }
 
 	$scope.hideSpinner = function(){ $ionicLoading.hide(); };
 
@@ -181,6 +192,8 @@ app.controller('AssignToProjectCtrl', function($scope, $ionicPopup, $state, $ion
 	console.log("create_project");
 	console.log($scope.create_project);
 	
+	$scope.goBack = function(){ $state.go('admin'); }
+	
 	$scope.unassignSite = function(site){ site.assigned = false; console.log("unassignSite");console.log(site);}
 	$scope.assignSite = function(site){ site.assigned = true; console.log("assignSite");console.log(site);}
 	
@@ -191,6 +204,186 @@ app.controller('AssignToProjectCtrl', function($scope, $ionicPopup, $state, $ion
 	
 	$scope.unassignForm = function(form){ form.assigned = false; console.log("unassignForm");console.log(form);}
 	$scope.assignForm = function(form){ form.assigned = true; console.log("assignForm");console.log(form);}
+});
+
+app.controller('CreateSiteCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createSiteService){
+
+	console.log("In CreateSiteCtrl");
+	$scope.create_site = {};
+	$scope.user = {};
+	$scope.user.id = window.localStorage.getItem("userId");
+	
+	$scope.showSpinner = function(){
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral"></ion-spinner>'
+		});
+	};
+	
+	$scope.goBack = function(){ $state.go('admin'); }
+	$scope.hideSpinner = function(){ $ionicLoading.hide(); };
+
+	$scope.createSite = function(){
+		
+		$scope.showSpinner();
+		console.log("New Site's Name");
+		console.log($scope.create_site.name);
+		createSiteService.addSiteName($scope.create_site.name);
+		
+		console.log("New Site's Description");
+		console.log($scope.create_site.descr);
+		createSiteService.addSiteDescr($scope.create_site.descr);
+		
+		console.log("New Site's Lat");
+		console.log($scope.create_site.site_lat);
+		if($scope.create_site.site_lat == undefined){
+			$scope.create_site.site_lat = 39.9821;
+		}
+		console.log($scope.create_site.site_lat);
+		createSiteService.addSiteLat($scope.create_site.site_lat);
+		
+		console.log("New Site's Lon");
+		console.log($scope.create_site.site_lon);
+		if($scope.create_site.site_lon == undefined){
+			$scope.create_site.site_lon = -75.0816;
+		}
+		console.log($scope.create_site.site_lon);
+		createSiteService.addSiteLon($scope.create_site.site_lon);
+		
+		var uploadData = {
+			site_name: $scope.create_site.name,
+			site_descr: $scope.create_site.descr,
+			site_lat: $scope.create_site.site_lat,
+			site_lon: $scope.create_site.site_lon,
+			user_id: $scope.user.id
+		};
+		var request = $http({
+			method: "post",
+			url: 'http://sciencetap.us/ionic/createSite.php',
+			data:{ uploadData: uploadData }
+		});
+		request.success(function(data){
+			console.log("All Data");
+			console.log(data);
+	
+			console.log("Site Name");
+			console.log($scope.create_site.name );
+			
+			console.log("Site ID");
+			createSiteService.addSiteId(data.site_id);
+			console.log(data.site_id);
+			
+			console.log("Projects");
+			console.log(data.projects);
+			createSiteService.addSiteProjects(data.projects);
+
+			$scope.hideSpinner();
+			$state.go('assign_to_site');
+		});
+		request.error(function(data){
+			$scope.hideSpinner();
+			console.log("Error creating site");
+			console.log(data);
+		});
+	};
+});
+
+app.controller('AssignToSiteCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createSiteService){
+	
+	console.log("In AssignToSiteCtrl");
+	
+	$scope.create_site = createSiteService.getSiteData();
+	console.log("create_site");
+	console.log($scope.create_site);
+	
+	$scope.showSpinner = function(){
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral"></ion-spinner>'
+		});
+	};
+	
+	$scope.goBack = function(){ $state.go('admin'); }
+	$scope.hideSpinner = function(){ $ionicLoading.hide(); };
+	
+	var mainPopup = function(title, message){
+		var popup = $ionicPopup.alert({
+			title: title,
+			template: message
+		});
+		popup.then(function(res){
+			console.log("main popup closed");
+		});
+	};
+	
+	$scope.unassignProject = function(project){ project.assigned = false; console.log("unassignProject");console.log(project);}
+	$scope.assignProject = function(project){ project.assigned = true; console.log("assignProject");console.log(project);}
+	
+	$scope.updateSite = function(){
+		
+		$scope.showSpinner();
+		
+		//count how many projects are assigned
+		var count = 0;
+		var project_id = 0;
+		
+		for(var i = 0; i < $scope.create_site.projects.length; i++){
+			if($scope.create_site.projects[i].assigned == true){
+				project_id = $scope.create_site.projects[i].project_id;
+				count++;
+			}
+		}
+		if(count > 1){
+			$scope.hideSpinner();
+			mainPopup('A Site Can Only Belong to One Project','');
+			return;
+		}
+		
+		console.log("Assigned Project's ID");
+		console.log(project_id);
+		
+		console.log("Site's ID");
+		console.log($scope.create_site.id);
+		
+		console.log("Site's Name");
+		console.log($scope.create_site.name);
+		
+		console.log("Site's Description");
+		console.log($scope.create_site.descr);
+		
+		console.log("Site's Lat");
+		console.log($scope.create_site.site_lat);
+		
+		console.log("Site's Lon");
+		console.log($scope.create_site.site_lon);
+		
+		var uploadData = {
+			project_id : project_id,
+			site_id : $scope.create_site.id
+		};
+		var request = $http({
+			method: "post",
+			url: 'http://sciencetap.us/ionic/updateSite.php',
+			data:{ uploadData: uploadData }
+		});
+		request.success(function(data){
+			console.log("All Data");
+			console.log(data);
+			
+			console.log("Site ID");
+			console.log(data.site_id);
+			
+			console.log("Project id");
+			console.log(data.project_id);
+
+			$scope.hideSpinner();
+			$state.go('admin');
+		});
+		request.error(function(data){
+			$scope.hideSpinner();
+			console.log("Error updating site");
+			console.log(data);
+		});
+	};
+	
 });
 
 
@@ -1653,6 +1846,29 @@ app.service('createProjectService', function(){
 		addProjectSites: addProjectSites,
 		addProjectForms: addProjectForms,
 		getProjectData: getProjectData
+	}
+	
+});
+
+app.service('createSiteService', function(){
+	var newSiteData = {};
+	
+	var addSiteName = function(name){ newSiteData.name = name; }
+	var addSiteDescr = function(descr){ newSiteData.descr = descr; }
+	var addSiteId = function(id){ newSiteData.id = id; }
+	var addSiteLat = function(site_lat){ newSiteData.site_lat = site_lat; }
+	var addSiteLon = function(site_lon){ newSiteData.site_lon = site_lon; }
+	var addSiteProjects = function(projects){ newSiteData.projects = projects; }
+	var getSiteData = function(){ return newSiteData; }
+	
+	return{
+		addSiteName: addSiteName,
+		addSiteDescr: addSiteDescr,
+		addSiteId: addSiteId,
+		addSiteProjects: addSiteProjects,
+		addSiteLat: addSiteLat,
+		addSiteLon: addSiteLon,
+		getSiteData: getSiteData
 	}
 	
 });
