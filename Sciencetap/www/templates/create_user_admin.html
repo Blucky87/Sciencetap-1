@@ -1,0 +1,51 @@
+<ion-view view-title="Create User Admin" name="create_user_admin">
+	<div class="bar bar-header bar-positive">
+		<button class="button button-positive" ng-click="goBack()">
+			Go Back
+		</button>
+		<h1 class="title">Create A User</h1>
+	</div>
+	<ion-view class="bg">
+	<ion-content class="padding has-subheader has-tabs">
+		<form name="createUserForm" ng-submit="createUser()">
+		<div class="list card">
+			<label class="item item-input">
+				<input ng-model="create_user.first_name" type="text" placeholder="First Name"></input>
+			</label>
+			<label class="item item-input">
+				<input ng-model="create_user.last_name" type="text" placeholder="Last Name"></input>
+			</label>
+			<label class="item item-input">
+				<input ng-model="create_user.email" type="email" placeholder="Email"></input>
+			</label>
+			<label class="item item-input">
+				<input ng-model="create_user.phone" type="tel" placeholder=""></input>
+			</label>
+			
+			<ion-checkbox ng-model="create_user.super_admin">Super Admin</ion-checkbox>
+			<ion-checkbox ng-model="create_user.account_creator">Account Creator</ion-checkbox>
+
+		</div>
+		<input class="button button-block button-royal" type="submit" value="Create Site"></input>
+		</form>
+	</ion-content>
+	</ion-view>
+	<div class="tabs tabs-positive tabs-icon-bottom">
+		<a nav-transition="ios" href="#/map" class="tab-item">
+		<i class="icon ion-map"></i>
+		Map
+		</a>
+		<a nav-transition="ios" href="#/collect" class="tab-item">
+		<i class="icon ion-clipboard"></i>
+		Collect
+		</a>
+		<a nav-transition="ios" href="#/view" class="tab-item">
+		<i class="icon ion-eye"></i>
+		View
+		</a>
+		<a nav-transition="ios" href="#/admin" class="tab-item active">
+		<i class="icon ion-settings"></i>
+		Admin	
+		</a>
+	</div>
+</ion-view>

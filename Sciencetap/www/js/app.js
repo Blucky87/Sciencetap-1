@@ -65,6 +65,16 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider){
 			templateUrl: 'templates/assign_to_site.html',
 			controller: 'AssignToSiteCtrl'
 		})
+		.state('create_user_admin',{
+			url: '/create_user_admin',
+			templateUrl: 'templates/create_user_admin.html',
+			controller: 'CreateUserAdminCtrl'
+		})
+		.state('assign_to_user',{
+			url: '/assign_to_user',
+			templateUrl: 'templates/assign_to_user.html',
+			controller: 'AssignToUserCtrl'
+		})
 	$urlRouterProvider.otherwise('/login')
 	
 	window.localStorage.setItem("admin", "false");
@@ -386,6 +396,183 @@ app.controller('AssignToSiteCtrl', function($scope, $ionicPopup, $state, $ionicL
 	
 });
 
+app.controller('CreateUserAdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createUserService){
+
+	console.log("In CreateUserAdminCtrl");
+	$scope.create_user = {};
+	$scope.user = {};
+	$scope.user.id = window.localStorage.getItem("userId");
+	$scope.create_user.super_admin = 0;
+	$scope.create_user.account_creator = 0;
+	
+	$scope.showSpinner = function(){
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral"></ion-spinner>'
+		});
+	};
+	
+	var mainPopup = function(title, message){
+		var popup = $ionicPopup.alert({
+			title: title,
+			template: message
+		});
+		popup.then(function(res){
+			console.log("main popup closed");
+		});
+	};
+	
+	$scope.goBack = function(){ $state.go('admin'); }
+	$scope.hideSpinner = function(){ $ionicLoading.hide(); };
+
+	$scope.createUser = function(){
+		
+		$scope.showSpinner();
+		console.log("New User's First Name");
+		console.log($scope.create_user.first_name);
+		createUserService.addFirstName($scope.create_user.first_name);
+		
+		console.log("New User's Last Name");
+		console.log($scope.create_user.last_name);
+		createUserService.addLastName($scope.create_user.last_name);
+		
+		console.log("New User's Email");
+		console.log($scope.create_user.email);
+		createUserService.addEmail($scope.create_user.email);
+		
+		console.log("New User's Phone");
+		console.log($scope.create_user.phone);
+		if($scope.create_user.phone == undefined){
+			$scope.create_user.phone = 0;
+		}
+		console.log($scope.create_user.phone);
+		createUserService.addPhone($scope.create_user.phone);
+		
+		console.log("New User is Super Admin");
+		console.log($scope.create_user.super_admin);
+		createUserService.addSuperAdmin($scope.create_user.super_admin);
+		
+		console.log("New User is Account Creator");
+		console.log($scope.create_user.account_creator);
+		createUserService.addAccountCreator($scope.create_user.account_creator);
+		
+		var uploadData = {
+			first_name: $scope.create_user.first_name,
+			last_name: $scope.create_user.last_name,
+			email: $scope.create_user.email,
+			phone: $scope.create_user.phone,
+			super_admin: $scope.create_user.super_admin,
+			account_creator: $scope.create_user.account_creator
+		};
+		var request = $http({
+			method: "post",
+			url: 'http://sciencetap.us/ionic/createUser.php',
+			data:{ uploadData: uploadData }
+		});
+		request.success(function(data){
+			console.log("All Data");
+			console.log(data);
+	
+			console.log("User ID");
+			console.log($scope.data.user_id );
+			createUserService.addUserID($scope.data.user_id);
+			
+			console.log("Projects");
+			console.log($scope.data.projects );
+			createUserService.addUserProjects($scope.data.projects);
+			
+			if(data.user_id == 0){
+				$scope.hideSpinner();
+				mainPopup('Email account is already registered to a User','');
+				return;
+			}
+
+			$scope.hideSpinner();
+			$state.go('assign_to_user');
+		});
+		request.error(function(data){
+			$scope.hideSpinner();
+			console.log("Error creating user");
+			console.log(data);
+		});
+	};
+});
+
+
+app.controller('AssignToUserCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createUserService){
+	
+	console.log("In AssignToUserCtrl");
+	
+	$scope.create_user = createUserService.getUserData();
+	console.log("create_user");
+	console.log($scope.create_user);
+	
+	$scope.showSpinner = function(){
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral"></ion-spinner>'
+		});
+	};
+	
+	$scope.goBack = function(){ $state.go('admin'); }
+	$scope.hideSpinner = function(){ $ionicLoading.hide(); };
+	
+	var mainPopup = function(title, message){
+		var popup = $ionicPopup.alert({
+			title: title,
+			template: message
+		});
+		popup.then(function(res){
+			console.log("main popup closed");
+		});
+	};
+	
+	$scope.unassignProject = function(project){ project.assigned = false; console.log("unassignProject");console.log(project);}
+	$scope.assignProject = function(project){ project.assigned = true; console.log("assignProject");console.log(project);}
+	
+	$scope.updateUser = function(){
+		
+		$scope.showSpinner();
+		
+		//get assigned projects
+		var projects = [];
+		
+		console.log("Assigned Projects' IDs");
+		for(var i = 0; i < $scope.create_user.projects.length; i++){
+			if($scope.create_user.projects[i].assigned == true){
+				projects.push($scope.create_user.projects[i].project_id);
+				console.log($scope.create_user.projects[i].project_id);
+			}
+		}
+		
+		console.log("Projects Array");
+		console.log(projects);
+		
+		console.log("User ID");
+		console.log($scope.create_user.user_id);
+		
+		var uploadData = {
+			projects : projects,
+			user_id : $scope.create_user.user_id
+		};
+		var request = $http({
+			method: "post",
+			url: 'http://sciencetap.us/ionic/updateUser.php',
+			data:{ uploadData: uploadData }
+		});
+		request.success(function(data){
+			console.log("All Data");
+			console.log(data);
+
+			$scope.hideSpinner();
+			$state.go('admin');
+		});
+		request.error(function(data){
+			$scope.hideSpinner();
+			console.log("Error updating user");
+			console.log(data);
+		});
+	};
+	
+});
 
 app.controller('AdminCtrl', function($scope, $ionicPopup, $state, $ionicLoading, $compile, $ionicModal, $ionicHistory, $http, $ionicScrollDelegate, createProjectService){
 	
@@ -1869,6 +2056,33 @@ app.service('createSiteService', function(){
 		addSiteLat: addSiteLat,
 		addSiteLon: addSiteLon,
 		getSiteData: getSiteData
+	}
+	
+});
+
+app.service('createUserService', function(){
+	var newUserData = {};
+	
+	var addFirstName = function(first_name){ newUserData.first_name = first_name; }
+	var addLastName = function(last_name){ newUserData.last_name = last_name; }
+	var addEmail = function(email){ newUserData.email = email; }
+	var addPhone = function(phone){ newUserData.phone = phone; }
+	var addSuperAdmin = function(super_admin){ newUserData.super_admin = super_admin; }
+	var addAccountCreator = function(account_creator){ newUserData.account_creator = account_creator; }
+	var addUserID = function(user_id){ newUserData.user_id = user_id; }
+	var addUserProjects = function(projects){ newUserData.projects = projects; }
+	var getUserData = function(){ return newUserData; }
+	
+	return{
+		addFirstName: addFirstName,
+		addLastName: addLastName,
+		addEmail: addEmail,
+		addPhone: addPhone,
+		addSuperAdmin: addSuperAdmin,
+		addAccountCreator: addAccountCreator,
+		addUserID: addUserID,
+		addUserProjects: addUserProjects,
+		getUserData: getUserData
 	}
 	
 });

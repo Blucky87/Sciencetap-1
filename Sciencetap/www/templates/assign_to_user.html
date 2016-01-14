@@ -1,23 +1,25 @@
-<ion-view view-title="assign_to_site" name="assign_to_site">
+<ion-view view-title="assign_to_user" name="assign_to_user">
 	<div class="bar bar-header bar-positive">
 		<button class="button button-positive" ng-click="goBack()">
 			Go Back
 		</button>
-		<h1 class="title">Assign Project To Site</h1>
+		<h1 class="title">Assign Project To User</h1>
 	</div>
 	<ion-view class="bg">
 	<ion-content class="padding has-subheader has-tabs">
-	<form name="assignToSiteForm" ng-submit="updateSite()">
+	<form name="assignToUserForm" ng-submit="updateUser()">
 		<div class="list card">
-			<div class="item item-divider">Site name: {{create_site.name}}</div>
-			<div class="item">Description: {{create_site.descr}}</div>
-			<div class="item">Latitude: {{create_site.site_lat}}</div>
-			<div class="item">Longitude: {{create_site.site_lon}}</div>
+			<div class="item item-divider">First Name: {{create_user.first_name}}</div>
+			<div class="item">Last Name: {{create_user.last_name}}</div>
+			<div class="item">Email: {{create_user.email}}</div>
+			<div class="item">Phone: {{create_user.phone}}</div>
+			<div class="item">Super Admin: {{create_user.super_admin}}</div>
+			<div class="item">Account Creator: {{create_user.account_creator}}</div>
 		</div>
 		
-		<div ng-if="create_site.projects.length > 0" class="list card">
+		<div ng-if="create_user.projects.length > 0" class="list card">
 			<div class="item item-divider">Projects</div>
-			<a ng-repeat="project in create_site.projects" class="item item-button-right" href="#">
+			<a ng-repeat="project in create_user.projects" class="item item-button-right" href="#">
 					<strong>{{project.project_name}}</strong>
 					<button ng-if="project.assigned" class="button button-small button-positive" ng-click="unassignProject(project)">Assigned</button>
 					<button ng-show="project.project_id != 0" ng-if="!project.assigned" class="button button-small" ng-click="assignProject(project)">Assign</button>
@@ -30,7 +32,7 @@
 		</a>
 		
 		</br>
-		<input class="button button-block button-royal" type="submit" value="Update Site"></input>
+		<input class="button button-block button-royal" type="submit" value="Update User"></input>
 		</form>
 		</br>
 		</br>
